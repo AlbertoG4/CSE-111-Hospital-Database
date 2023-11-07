@@ -1,7 +1,7 @@
 .mode csv
-  
-.separator |
-  
+
+.separator ,
+
 .import data/doctor.tbl doctor
 
 .import data/patient.tbl patient

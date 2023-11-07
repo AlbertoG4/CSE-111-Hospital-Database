@@ -1,19 +1,13 @@
 -- SQLite
-DROP TABLE Doctor;
-DROP TABLE Patient;
-DROP TABLE Nurse;
-DROP TABLE Medication;
-DROP TABLE PatientRoom;
-DROP TABLE Appointment;
 
-CREATE TABLE Doctor (
+CREATE TABLE doctor (
     DoctorID INTEGER PRIMARY KEY,
     FirstName CHAR(32) NOT NULL,
     LastName CHAR(32) NOT NULL,
     Specialization CHAR(50) NOT NULL
 );
 
-CREATE TABLE Patient (
+CREATE TABLE patient (
     PatientID INTEGER PRIMARY KEY,
     FirstName CHAR(32) NOT NULL,
     LastName CHAR(32) NOT NULL,
@@ -25,7 +19,7 @@ CREATE TABLE Patient (
     FOREIGN KEY (MedicationID) REFERENCES Medication(MedicationID)
 );
 
-CREATE TABLE Medication (
+CREATE TABLE medication (
     MedicationID INTEGER PRIMARY KEY,
     Name CHAR(50) NOT NULL,
     Pharma_Company CHAR(50),
@@ -34,7 +28,7 @@ CREATE TABLE Medication (
     DosageForm CHAR(20) NOT NULL
 );
 
-CREATE TABLE Appointment (
+CREATE TABLE appointment (
     AppointmentID INTEGER PRIMARY KEY,
     PatientID INTEGER NOT NULL,
     DoctorID INTEGER NOT NULL,
@@ -45,7 +39,7 @@ CREATE TABLE Appointment (
     FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID)
 );
 
-CREATE TABLE PatientRoom (
+CREATE TABLE room (
     PatientID INTEGER NOT NULL,
     RoomNumber CHAR(10) NOT NULL,
     CheckInDate DATE NOT NULL,
@@ -55,7 +49,7 @@ CREATE TABLE PatientRoom (
     FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
 );
 
-CREATE TABLE Nurse (
+CREATE TABLE nurse (
     NurseID INTEGER PRIMARY KEY,
     FirstName CHAR(32) NOT NULL,
     LastName CHAR(32) NOT NULL,
