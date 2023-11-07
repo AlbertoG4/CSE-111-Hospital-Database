@@ -96,5 +96,36 @@ FROM appointment a
 JOIN doctor d ON a.DoctorID = d.DoctorID
 WHERE d.Specialization = 'Pediatric';
 
+/*Modification Statements*/
+
+INSERT INTO patient (FirstName, LastName, DateOfBirth, Address, MedicationID, Allergies, BloodType)
+VALUES ('Alice', 'Johnson', '1985-03-15', '123 Elm St', 1, 'Peanuts', 'AB+');
+
+INSERT INTO doctor (FirstName, LastName, Specialization)
+VALUES ('Emily', 'Brown', 'Oncology');
+
+INSERT INTO medication (Name, Pharma_Company, Purpose, SideEffects, DosageForm)
+VALUES ('Aspirin', 'Bayer', 'Pain relief', 'Stomach upset', 'Tablet');
 
 
+UPDATE patient
+SET Address = '456 Oak St'
+WHERE PatientID = 12341;
+
+UPDATE doctor
+SET Specialization = 'Neurology'
+WHERE DoctorID = 1002;
+
+UPDATE medication
+SET DosageForm = 'Capsule'
+WHERE MedicationID = 45621;
+
+
+DELETE FROM patient
+WHERE PatientID = 12341;
+
+DELETE FROM doctor
+WHERE DoctorID = 1001;
+
+DELETE FROM medication
+WHERE MedicationID = 25469;
