@@ -1,13 +1,15 @@
 .mode csv
+  
+.separator |
+  
+.import data/doctor.tbl doctor
 
-.import data/doctor.csv doctor
+.import data/patient.tbl patient
 
-.import data/patient.csv patient
+.import data/medication.tbl medication
 
-.import data/medication.csv medication
+.import data/appointment.tbl appointment
 
-.import data/appointment.csv appointment
+.import data/room.tbl room
 
-.import data/room.csv room
-
-.import data/nurse.csv nurse
+.import data/nurse.tbl nurse
