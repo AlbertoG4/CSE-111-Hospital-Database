@@ -16,7 +16,7 @@ SELECT DoctorID, COUNT(*) AS AppointmentCount
 FROM appointment 
 GROUP BY DoctorID;
 
-/*5)List the medications prescribed by doctors, along with the patient's first name*/
+/*5)List the medications prescribed, along with the patient's first name*/
 SELECT p.FirstName, m.Name
 FROM patient p
 JOIN medication m ON p.MedicationID = m.MedicationID;
@@ -26,7 +26,7 @@ SELECT FirstName, LastName
 FROM doctor
 WHERE Specialization = 'Cardiology';
 
-/*7)Find the patients who were born in 2000 or later*/
+/*7)Find the patients who were born in 1990 or earlier*/
 SELECT FirstName, LastName
 FROM patient
 WHERE DateOfBirth <= '1990-01-01';
@@ -98,14 +98,14 @@ WHERE d.Specialization = 'Pediatric';
 
 /*Modification Statements*/
 
-INSERT INTO patient (FirstName, LastName, DateOfBirth, Address, MedicationID, Allergies, BloodType)
-VALUES ('Alice', 'Johnson', '1985-03-15', '123 Elm St', 1, 'Peanuts', 'AB+');
+INSERT INTO patient (PatientID, FirstName, LastName, DateOfBirth, Address, MedicationID, Allergies, BloodType)
+VALUES ('12346', 'Alice', 'Johnson', '1985-03-15', '123 Elm St', '25469', 'Peanuts', 'AB+');
 
-INSERT INTO doctor (FirstName, LastName, Specialization)
-VALUES ('Emily', 'Brown', 'Oncology');
+INSERT INTO doctor (DoctorID, FirstName, LastName, Specialization)
+VALUES ('1006', 'Emily', 'Brown', 'Gynecology');
 
-INSERT INTO medication (Name, Pharma_Company, Purpose, SideEffects, DosageForm)
-VALUES ('Aspirin', 'Bayer', 'Pain relief', 'Stomach upset', 'Tablet');
+INSERT INTO medication (MedicationID, Name, Pharma_Company, Purpose, SideEffects, DosageForm)
+VALUES ('95217', 'Aspirin', 'Bayer', 'Pain relief', 'Stomach upset', 'Tablet');
 
 
 UPDATE patient
@@ -122,10 +122,10 @@ WHERE MedicationID = 45621;
 
 
 DELETE FROM patient
-WHERE PatientID = 12341;
+WHERE PatientID = 12346;
 
 DELETE FROM doctor
-WHERE DoctorID = 1001;
+WHERE DoctorID = 1006;
 
 DELETE FROM medication
-WHERE MedicationID = 25469;
+WHERE MedicationID = 95217;
