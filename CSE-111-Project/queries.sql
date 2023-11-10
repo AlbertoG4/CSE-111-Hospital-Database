@@ -6,10 +6,56 @@ FROM doctor;
 SELECT FirstName, LastName, BloodType 
 FROM patient;
 
-/*3)Find the names of all patients who have allergies*/
-SELECT FirstName, LastName 
-FROM patient 
-WHERE Allergies IS NOT 'None';
+/*3)List of Patients with Their Appointments and Assigned Doctors
+
+This query retrieves patient details along with their appointment times and the corresponding doctors.*/
+SELECT
+    p.FirstName AS PatientFirstName,
+    p.LastName AS PatientLastName,
+    a.AppointmentTime,
+    d.FirstName AS DoctorFirstName,
+    d.LastName AS DoctorLastName
+FROM
+    patient p
+JOIN
+    appointment a ON p.PatientID = a.PatientID
+JOIN
+    doctor d ON a.DoctorID = d.DoctorID;
+
+/* Patients, Their Room Assignments, and Check-in Dates
+
+This query shows which patients are assigned to which rooms, along with their check-in dates. */
+
+SELECT
+    p.FirstName AS PatientFirstName,
+    p.LastName AS PatientLastName,
+    pr.RoomNumber,
+    pr.CheckInDate
+FROM
+    patient p
+JOIN
+    patient_room pr ON p.PatientID = pr.PatientID
+JOIN
+    room r ON pr.RoomNumber = r.RoomNumber;
+
+/* Patients with Their Prescribed Medications and Prescribing Details
+
+This query lists patients, the medications prescribed to them, and details about the prescriptions. */
+
+SELECT
+    p.FirstName AS PatientFirstName,
+    p.LastName AS PatientLastName,
+    m.Name AS MedicationName,
+    pm.Dosage,
+    pm.Frequency,
+    pm.PrescribedDate
+FROM
+    patient p
+JOIN
+    patient_medication pm ON p.PatientID = pm.PatientID
+JOIN
+    medication m ON pm.MedicationID = m.MedicationID;
+
 
 /*4)Count the number of appointments for each doctor*/
 SELECT DoctorID, COUNT(*) AS AppointmentCount 

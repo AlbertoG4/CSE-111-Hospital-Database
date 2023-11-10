@@ -13,7 +13,6 @@ CREATE TABLE patient (
     LastName CHAR(32) NOT NULL,
     DateOfBirth DATE NOT NULL,
     Address CHAR(100) NOT NULL,
-    MedicationID INTEGER NOT NULL,
     Allergies VARCHAR(255),
     BloodType CHAR(3),
     FOREIGN KEY (MedicationID) REFERENCES Medication(MedicationID)
@@ -40,18 +39,36 @@ CREATE TABLE appointment (
 );
 
 CREATE TABLE room (
+    RoomNumber CHAR(10) PRIMARY KEY,
+    RoomType CHAR(20),
+    Capacity INTEGER
+);
+
+CREATE TABLE patient_room (
     PatientID INTEGER NOT NULL,
     RoomNumber CHAR(10) NOT NULL,
     CheckInDate DATE NOT NULL,
     CheckOutDate DATE,
     PRIMARY KEY (PatientID, RoomNumber, CheckInDate),
-    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
-    FOREIGN KEY (RoomNumber) REFERENCES Room(RoomNumber)
+    FOREIGN KEY (PatientID) REFERENCES patient(PatientID),
+    FOREIGN KEY (RoomNumber) REFERENCES room(RoomNumber)
 );
+
 
 CREATE TABLE nurse (
     NurseID INTEGER PRIMARY KEY,
     FirstName CHAR(32) NOT NULL,
     LastName CHAR(32) NOT NULL,
     Shift CHAR(20) NOT NULL
+);
+
+CREATE TABLE patient_medication (
+    PatientID INTEGER NOT NULL,
+    MedicationID INTEGER NOT NULL,
+    PrescribedDate DATE NOT NULL,
+    Dosage CHAR(50),
+    Frequency CHAR(50),
+    PRIMARY KEY (PatientID, MedicationID, PrescribedDate),
+    FOREIGN KEY (PatientID) REFERENCES patient(PatientID),
+    FOREIGN KEY (MedicationID) REFERENCES medication(MedicationID)
 );
