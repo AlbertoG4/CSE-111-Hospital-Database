@@ -1,5 +1,14 @@
 -- SQLite
 
+DROP TABLE DOCTOR;
+DROP TABLE PATIENT;
+DROP TABLE MEDICATION;
+DROP TABLE APPOINTMENT;
+DROP TABLE PATIENT_ROOM;
+DROP TABLE ROOM;
+DROP TABLE NURSE;
+DROP TABLE PATIENT_MEDICATION;
+
 CREATE TABLE doctor (
     DoctorID INTEGER PRIMARY KEY,
     FirstName CHAR(32) NOT NULL,
@@ -14,8 +23,8 @@ CREATE TABLE patient (
     DateOfBirth DATE NOT NULL,
     Address CHAR(100) NOT NULL,
     Allergies VARCHAR(255),
-    BloodType CHAR(3),
-    FOREIGN KEY (MedicationID) REFERENCES Medication(MedicationID)
+    BloodType CHAR(3)
+
 );
 
 CREATE TABLE medication (
@@ -34,8 +43,8 @@ CREATE TABLE appointment (
     AppointmentTime TIMESTAMP NOT NULL,
     Purpose VARCHAR(255),
     Notes VARCHAR(255),
-    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
-    FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID)
+    FOREIGN KEY (PatientID) REFERENCES patient(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES doctor(DoctorID)
 );
 
 CREATE TABLE room (

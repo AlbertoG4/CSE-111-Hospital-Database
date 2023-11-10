@@ -13,3 +13,5 @@
 .import data/room.tbl room
 
 .import data/nurse.tbl nurse
+
+.import data/patient_room.tbl patient_room
