@@ -47,6 +47,8 @@ CREATE TABLE appointment (
     FOREIGN KEY (DoctorID) REFERENCES doctor(DoctorID)
 );
 
+-- had to create room because the PatientRoom junction table can 
+-- record each instance of a patient being assigned to a room, while the Room table maintains the static details about each room.
 CREATE TABLE room (
     RoomNumber CHAR(10) PRIMARY KEY,
     RoomType CHAR(20),
