@@ -62,10 +62,13 @@ SELECT DoctorID, COUNT(*) AS AppointmentCount
 FROM appointment 
 GROUP BY DoctorID;
 
-/*5)List the medications prescribed, along with the patient's first name*/
+/*5)List the medications prescribed, along with the patient's first name
+fix this query*/
 SELECT p.FirstName, m.Name
 FROM patient p
-JOIN medication m ON p.MedicationID = m.MedicationID;
+JOIN patient_medication pm ON p.PatientID = pm.PatientID
+JOIN medication m ON pm.MedicationID = m.MedicationID;
+
 
 /*6)list the doctors whos specialty is Cardiology*/
 SELECT FirstName, LastName 
@@ -77,10 +80,12 @@ SELECT FirstName, LastName
 FROM patient
 WHERE DateOfBirth <= '1990-01-01';
 
-/*8)List the rooms where patients are currently checked in*/
+/*8)List the rooms where patients are currently checked in
+fixed this one as well*/
 SELECT RoomNumber, PatientID, CheckInDate
-FROM room 
+FROM patient_room 
 WHERE CheckOutDate IS NULL;
+
 
 /*9)List the medications with side effects*/
 SELECT Name, SideEffects 
@@ -93,10 +98,12 @@ FROM doctor d
 LEFT JOIN appointment a ON d.DoctorID = a.DoctorID
 WHERE a.DoctorID IS NULL;
 
-/*11)Count the number of patients in each room*/
+/*11)Count the number of patients in each room
+updated*/
 SELECT RoomNumber, COUNT(*) AS PatientCount
-FROM room
+FROM patient_room
 GROUP BY RoomNumber;
+
 
 /*12)List the nurses working the night shift*/
 SELECT FirstName, LastName
@@ -136,11 +143,13 @@ SELECT FirstName, LastName, DateOfBirth
 FROM patient
 WHERE DateOfBirth < DATE('now', '-60 years');
 
-/*20)Count the total number of patients seeing a Pediatric Doctor*/
-SELECT COUNT(*) AS DermatologyPatientCount
+/*20)Count the total number of patients seeing a Pediatric Doctor
+cahgned alias since it was the wrong type of doctor*/
+SELECT COUNT(*) AS PediatricPatientCount
 FROM appointment a
 JOIN doctor d ON a.DoctorID = d.DoctorID
 WHERE d.Specialization = 'Pediatric';
+
 
 /*Modification Statements*/
 
