@@ -40,6 +40,7 @@ CREATE TABLE appointment (
     AppointmentID INTEGER PRIMARY KEY,
     PatientID INTEGER NOT NULL,
     DoctorID INTEGER NOT NULL,
+    AppointmentDate DATE NOT NULL, 
     AppointmentTime TIMESTAMP NOT NULL,
     Purpose VARCHAR(255),
     Notes VARCHAR(255),
