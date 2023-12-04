@@ -2,6 +2,7 @@ import customtkinter as ctk
 import os
 import sqlite3
 from PIL import Image
+from datetime import datetime
 
 
 class App(ctk.CTk):
@@ -30,7 +31,7 @@ class App(ctk.CTk):
         # create navigation frame
         app.navigation_frame = ctk.CTkFrame(app, corner_radius=0)
         app.navigation_frame.grid(row=0, column=0, sticky="nsew")
-        app.navigation_frame.grid_rowconfigure(6, weight=1)
+        app.navigation_frame.grid_rowconfigure(7, weight=1)
 
         app.navigation_frame_label = ctk.CTkLabel(app.navigation_frame, text=" UCM HOSPITAL", image=app.blue_cross,
                                                              compound="left", font=ctk.CTkFont(size=15, weight="bold"))
@@ -70,6 +71,38 @@ class App(ctk.CTk):
                                                                 command=app.change_appearance_mode_event)
         app.appearance_mode_menu.grid(row=7, column=0, padx=20, pady=20, sticky="s")
 
+
+        def search_patient_data():
+            # Fetch data from entry fields
+            first_name = app.search_first_name.get()
+            last_name = app.search_last_name.get()
+            dob = app.search_dob.get()
+
+            # Database operation
+            try:
+                # Connect to the SQLite database
+                conn = sqlite3.connect('data.sqlite')  # Replace 'data.sqlite' with your actual database file
+                cursor = conn.cursor()
+
+                # SQL query to search for a patient
+                # This query will search for records that match all provided fields
+                query = ''' SELECT * FROM patient 
+                            WHERE FirstName LIKE ? AND LastName LIKE ? AND DateOfBirth = ? '''
+                cursor.execute(query, (first_name + '%', last_name + '%', dob))
+
+                # Fetching the results
+                search_results = cursor.fetchall()
+                for row in search_results:
+                    print(row)  # Print the result or handle it as needed
+
+            except sqlite3.Error as error:
+                print("Failed to search data in sqlite table", error)
+            
+            finally:
+                # Close the database connection
+                if conn:
+                    conn.close()
+
         # create home frame
         app.home_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
         app.home_frame.grid_columnconfigure(0, weight=1)
@@ -77,20 +110,27 @@ class App(ctk.CTk):
         app.home_frame_large_image_label = ctk.CTkLabel(app.home_frame, text="", image=app.large_test_image)
         app.home_frame_large_image_label.grid(row=0, column=0, padx=20, pady=10)
 
-        app.home_frame_button_1 = ctk.CTkButton(app.home_frame, text="", image=app.image_icon_image)
-        app.home_frame_button_1.grid(row=1, column=0, padx=20, pady=10)
-        app.home_frame_button_2 = ctk.CTkButton(app.home_frame, text="CTkButton", image=app.image_icon_image, compound="right")
-        app.home_frame_button_2.grid(row=2, column=0, padx=20, pady=10)
-        
+        app.search_first_name = ctk.CTkEntry(app.home_frame, placeholder_text="First Name")
+        app.search_first_name.grid(row=1, column=0, padx=20, pady=10)
+
+        app.search_last_name = ctk.CTkEntry(app.home_frame, placeholder_text="Last Name")
+        app.search_last_name.grid(row=2, column=0, padx=20, pady=10)
+
+        app.search_dob = ctk.CTkEntry(app.home_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.search_dob.grid(row=3, column=0, padx=20, pady=10)
+
+        app.submit_search_button = ctk.CTkButton(app.home_frame, text="Search", command=search_patient_data)
+        app.submit_search_button.grid(row=4, column=0, padx=20, pady=10)
+
 
         
-
+        # for adding patient information to sqlite, this is taking directly from add_patient frame
         def save_patient_data():
         # Fetch data from entry fields
             patient_data = (
-                app.entry_first_name.get(),
-                app.entry_last_name.get(),
-                app.entry_dob.get(),
+                app.entry_first.get(),
+                app.entry_last.get(),
+                app.entry_bday.get(),
                 app.entry_address.get(),
                 app.entry_allergies.get(),
                 app.entry_blood_type.get()
@@ -118,20 +158,20 @@ class App(ctk.CTk):
                 # Close the database connection
                 if conn:
                     conn.close()
-            
-        
+
 
         # create add patient frame
         app.add_patient_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.add_patient_frame.grid_columnconfigure(0, weight=1)
 
-        app.entry_first_name = ctk.CTkEntry(app.add_patient_frame, placeholder_text="First Name")
-        app.entry_first_name.grid(row=1, column=0, padx=20, pady=10)
+        app.entry_first = ctk.CTkEntry(app.add_patient_frame, placeholder_text="First Name")
+        app.entry_first.grid(row=1, column=0, padx=20, pady=10)
 
-        app.entry_last_name = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Last Name")
-        app.entry_last_name.grid(row=2, column=0, padx=20, pady=10)
+        app.entry_last = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Last Name")
+        app.entry_last.grid(row=2, column=0, padx=20, pady=10)
 
-        app.entry_dob = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
-        app.entry_dob.grid(row=3, column=0, padx=20, pady=10)
+        app.entry_bday = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.entry_bday.grid(row=3, column=0, padx=20, pady=10)
 
         app.entry_address = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Address")
         app.entry_address.grid(row=4, column=0, padx=20, pady=10)
@@ -142,28 +182,169 @@ class App(ctk.CTk):
         app.entry_blood_type = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Blood Type")
         app.entry_blood_type.grid(row=6, column=0, padx=20, pady=10)
 
-        app.submit = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Blood Type")
-        app.entry_blood_type.grid(row=6, column=0, padx=20, pady=10)
-
-        app.submit_button = ctk.CTkButton(app, text="Submit", command=save_patient_data)
+        app.submit_button = ctk.CTkButton(app.add_patient_frame, text="Submit", command=save_patient_data)
         app.submit_button.grid(row=7, column=0, padx=20, pady=10)
 
+        
+        def display_rooms_all():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                query = "SELECT * FROM room"
+                cursor.execute(query)
+                rooms = cursor.fetchall()
+
+                for room in rooms:
+                    print(room)  # Replace this with your method of displaying the data
+
+            except sqlite3.Error as error:
+                print("Failed to display all rooms", error)
+            finally:
+                if conn:
+                    conn.close()
+
+        def display_rooms_empty():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                # Assuming 'CheckOutDate IS NULL' signifies a room is currently occupied
+                query = '''SELECT * FROM room 
+                        WHERE RoomNumber NOT IN 
+                        (SELECT RoomNumber FROM patient_room WHERE CheckOutDate IS NULL)'''
+                cursor.execute(query)
+                empty_rooms = cursor.fetchall()
+
+                for room in empty_rooms:
+                    print(room)
+
+            except sqlite3.Error as error:
+                print("Failed to display available rooms", error)
+            finally:
+                if conn:
+                    conn.close()
+
+        def display_rooms_occupied():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                query = '''SELECT * FROM room 
+                        WHERE RoomNumber IN 
+                        (SELECT RoomNumber FROM patient_room WHERE CheckOutDate IS NULL)'''
+                cursor.execute(query)
+                occupied_rooms = cursor.fetchall()
+
+                for room in occupied_rooms:
+                    print(room)
+
+            except sqlite3.Error as error:
+                print("Failed to display non-available rooms", error)
+            finally:
+                if conn:
+                    conn.close()
+            
         # create rooms frame
         app.room_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.room_frame.grid_columnconfigure(0, weight=1)
+
+        #Display all rooms button
+        app.submit_button_all = ctk.CTkButton(app.room_frame, text="Display all Rooms", command=display_rooms_all)
+        app.submit_button_all.grid(row=0, column=0, padx=20, pady=10)
+
+        #Display available rooms
+        app.submit_button_empty = ctk.CTkButton(app.room_frame, text="Display available rooms", command=display_rooms_empty)
+        app.submit_button_empty.grid(row=1, column=0, padx=20, pady=10)
+
+        #Display Non-available rooms
+        app.submit_button_non_empty = ctk.CTkButton(app.room_frame, text="Display Non-available rooms", command=display_rooms_occupied)
+        app.submit_button_non_empty.grid(row=2, column=0, padx=20, pady=10)
+
 
         #create doc and nurse frame
         app.doc_nurse_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
 
+        def search_appointment():
+            # Fetch data from entry fields
+            patient_name = app.entry_patient_name.get()
+            patient_dob = app.entry_patient_dob.get()
+
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                # Assuming you have a 'patient' and an 'appointment' table and they are related by 'PatientID'.
+                # This query joins the 'patient' and 'appointment' tables to find appointments
+                # for a patient with a matching name and date of birth.
+                query = ''' SELECT a.AppointmentID, a.AppointmentTime, a.Notes
+                            FROM appointment a
+                            JOIN patient p ON a.PatientID = p.PatientID
+                            WHERE p.FirstName || ' ' || p.LastName LIKE ? AND p.DateOfBirth = ? '''
+
+                # Format patient name for partial matching and execute query
+                cursor.execute(query, ('%' + patient_name + '%', patient_dob))
+                appointments = cursor.fetchall()
+
+                for appointment in appointments:
+                    print(appointment)  # Replace with your method of displaying the data
+
+            except sqlite3.Error as error:
+                print("Failed to search appointments", error)
+            finally:
+                if conn:
+                    conn.close()
+        
         #search appointment frame
         app.search_appointment_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.search_appointment_frame.grid(row=1, column=0, padx=20, pady=10)
 
         app.entry_patient_name = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="Patient Name")
         app.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
 
         app.entry_patient_dob = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
-        app.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)        
+        app.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
 
-         #create appointment frame
+        app.submit_button = ctk.CTkButton(app.search_appointment_frame, text="Submit", command=search_appointment)
+        app.submit_button.grid(row=3, column=0, padx=20, pady=10)        
+
+        def add_appointment():
+            # Fetch data from entry fields
+            patient_name = app.entry_patient_name.get()
+            patient_dob = app.entry_patient_dob.get()
+            appointment_date = app.entry_appointment_date.get()
+            appointment_time = app.entry_appointment_time.get()
+
+            # Combine date and time into a single datetime object (if necessary)
+            appointment_datetime = datetime.strptime(appointment_date + ' ' + appointment_time, '%Y-%m-%d %I:%M %p')
+
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                # Assuming you have a 'patient' table and you need to find the PatientID based on name and DOB
+                cursor.execute("SELECT PatientID FROM patient WHERE FirstName || ' ' || LastName = ? AND DateOfBirth = ?", (patient_name, patient_dob))
+                patient_id_result = cursor.fetchone()
+
+                if patient_id_result:
+                    patient_id = patient_id_result[0]
+                    
+                    # SQL query to insert a new appointment
+                    query = ''' INSERT INTO appointment (PatientID, AppointmentTime)
+                                VALUES (?, ?) '''
+                    cursor.execute(query, (patient_id, appointment_datetime))
+                    conn.commit()
+                    print("Appointment added successfully")
+                else:
+                    print("Patient not found")
+
+            except sqlite3.Error as error:
+                print("Failed to add appointment", error)
+            finally:
+                if conn:
+                    conn.close()
+
+         #create/add appointment frame
         app.add_appointment_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
 
         app.entry_patient_name = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Patient Name")
@@ -177,6 +358,9 @@ class App(ctk.CTk):
 
         app.entry_appointment_time = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Appointment Time (HH:MM AM/PM)")
         app.entry_appointment_time.grid(row=4, column=0, padx=20, pady=10)
+
+        app.submit_button = ctk.CTkButton(app.add_appointment_frame, text="Submit", command=add_appointment)
+        app.submit_button.grid(row=5, column=0, padx=20, pady=10)
 
         # select default frame
         app.select_frame_by_name("Patient_Home")
