@@ -244,6 +244,42 @@ class App(ctk.CTk):
             finally:
                 if conn:
                     conn.close()
+
+        def display_doctors():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                query = '''SELECT * FROM doctor'''
+                cursor.execute(query)
+                occupied_rooms = cursor.fetchall()
+
+                for room in occupied_rooms:
+                    print(room)
+
+            except sqlite3.Error as error:
+                print("Failed to display doctors", error)
+            finally:
+                if conn:
+                    conn.close()
+        
+        def display_nurses():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+
+                query = '''SELECT * FROM nurse'''
+                cursor.execute(query)
+                occupied_rooms = cursor.fetchall()
+
+                for room in occupied_rooms:
+                    print(room)
+
+            except sqlite3.Error as error:
+                print("Failed to display nurses", error)
+            finally:
+                if conn:
+                    conn.close()
             
         # create rooms frame
         app.room_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
@@ -264,6 +300,16 @@ class App(ctk.CTk):
 
         #create doc and nurse frame
         app.doc_nurse_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.doc_nurse_frame.grid_columnconfigure(0, weight=1)
+
+        #Display all doctors
+        app.submit_button_all = ctk.CTkButton(app.doc_nurse_frame, text="Display all doctors", command=display_doctors)
+        app.submit_button_all.grid(row=0, column=0, padx=20, pady=10)
+
+        #Display all nurses
+        app.submit_button_empty = ctk.CTkButton(app.doc_nurse_frame, text="Display all nurses", command=display_nurses)
+        app.submit_button_empty.grid(row=1, column=0, padx=20, pady=10)
+
 
         def search_appointment():
             # Fetch data from entry fields
@@ -297,7 +343,7 @@ class App(ctk.CTk):
         
         #search appointment frame
         app.search_appointment_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
-        app.search_appointment_frame.grid(row=1, column=0, padx=20, pady=10)
+        app.search_appointment_frame.grid_columnconfigure(0, weight=1)
 
         app.entry_patient_name = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="Patient Name")
         app.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
@@ -346,9 +392,10 @@ class App(ctk.CTk):
 
          #create/add appointment frame
         app.add_appointment_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.add_appointment_frame.grid_columnconfigure(0, weight=1)
 
         app.entry_patient_name = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Patient Name")
-        app.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
+        app.entry_patient_name.grid_columnconfigure(0, weight=1)
 
         app.entry_patient_dob = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
         app.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
@@ -416,8 +463,7 @@ class App(ctk.CTk):
         app.select_frame_by_name("Rooms")
 
     def doc_nurse_button_event(app):
-        app.select_frame_by_name("Doctor and Nurse")
-
+        app.select_frame_by_name("Doctor_Nurse")
 
     def change_appearance_mode_event(app, new_appearance_mode):
         ctk.set_appearance_mode(new_appearance_mode)
