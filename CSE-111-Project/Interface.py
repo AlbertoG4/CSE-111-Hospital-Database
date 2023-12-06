@@ -245,7 +245,7 @@ class App(ctk.CTk):
                 if conn:
                     conn.close()
             
-        # create rooms frame
+        # Display rooms frame
         app.room_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
         app.room_frame.grid_columnconfigure(0, weight=1)
 
@@ -264,6 +264,7 @@ class App(ctk.CTk):
 
         #create doc and nurse frame
         app.doc_nurse_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        
 
         def search_appointment():
             # Fetch data from entry fields
@@ -344,7 +345,7 @@ class App(ctk.CTk):
                 if conn:
                     conn.close()
 
-         #create/add appointment frame
+        #create/add appointment frame
         app.add_appointment_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
 
         app.entry_patient_name = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Patient Name")
@@ -421,30 +422,6 @@ class App(ctk.CTk):
 
     def change_appearance_mode_event(app, new_appearance_mode):
         ctk.set_appearance_mode(new_appearance_mode)
-
-    def search_appointment_event(app):
-        # Fetch data from entry fields
-        patient_name = app.entry_patient_name.get()
-        patient_dob = app.entry_patient_dob.get()
-
-        # Database operation to search for appointments
-        try:
-            # Connect to the SQLite database
-            with sqlite3.connect('data.sqlite') as conn:
-                cursor = conn.cursor()
-
-                # SQL query to search for appointments
-                query = ''' SELECT * FROM appointment WHERE PatientName = ? AND PatientDOB = ? '''
-
-                # Execute the query
-                cursor.execute(query, (patient_name, patient_dob))
-                appointments = cursor.fetchall()
-
-                # Print or display the appointments as needed
-                print("Appointments for {}: {}".format(patient_name, appointments))
-
-        except sqlite3.Error as error:
-            print("Failed to fetch data from sqlite table", error)
 
 if __name__ == "__main__":
     app = App()
