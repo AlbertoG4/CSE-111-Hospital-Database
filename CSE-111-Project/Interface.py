@@ -244,7 +244,36 @@ class App(ctk.CTk):
             finally:
                 if conn:
                     conn.close()
-            
+        def display_doctors():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+                query = '''SELECT * FROM doctor'''
+                cursor.execute(query)
+                occupied_rooms = cursor.fetchall()
+                for room in occupied_rooms:
+                    print(room)
+            except sqlite3.Error as error:
+                print("Failed to display doctors", error)
+            finally:
+                if conn:
+                    conn.close()
+        
+        def display_nurses():
+            try:
+                conn = sqlite3.connect('data.sqlite')
+                cursor = conn.cursor()
+                query = '''SELECT * FROM nurse'''
+                cursor.execute(query)
+                occupied_rooms = cursor.fetchall()
+                for room in occupied_rooms:
+                    print(room)
+            except sqlite3.Error as error:
+                print("Failed to display nurses", error)
+            finally:
+                if conn:
+                    conn.close()
+
         # create rooms frame
         app.room_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
         app.room_frame.grid_columnconfigure(0, weight=1)
@@ -264,7 +293,16 @@ class App(ctk.CTk):
 
         #create doc and nurse frame
         app.doc_nurse_frame = ctk.CTkFrame(app, corner_radius=0, fg_color="transparent")
+        app.doc_nurse_frame.grid_columnconfigure(0, weight=1)
 
+        #Display all doctors
+        app.submit_button_all = ctk.CTkButton(app.doc_nurse_frame, text="Display all doctors", command=display_doctors)
+        app.submit_button_all.grid(row=0, column=0, padx=20, pady=10)
+
+        #Display all nurses
+        app.submit_button_empty = ctk.CTkButton(app.doc_nurse_frame, text="Display all nurses", command=display_nurses)
+        app.submit_button_empty.grid(row=1, column=0, padx=20, pady=10)
+        
         def search_appointment():
             # Fetch data from entry fields
             patient_name = app.entry_patient_name.get()
