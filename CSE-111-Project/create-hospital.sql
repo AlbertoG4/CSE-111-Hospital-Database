@@ -2,7 +2,6 @@
 
 DROP TABLE IF EXISTS doctor;
 DROP TABLE IF EXISTS nurse;
-DROP TABLE IF EXISTS nurse_patient_assignment;
 DROP TABLE IF EXISTS patient;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS patient_room;
@@ -23,15 +22,6 @@ CREATE TABLE nurse (
     FirstName VARCHAR(32) NOT NULL,
     LastName VARCHAR(32) NOT NULL,
     Shift CHAR(20) NOT NULL
-);
-
-CREATE TABLE nurse_patient_assignment (
-    NurseID INTEGER NOT NULL,
-    PatientID INTEGER NOT NULL,
-    AssignmentDate DATE NOT NULL,
-    PRIMARY KEY (NurseID, PatientID, AssignmentDate),
-    FOREIGN KEY (NurseID) REFERENCES nurse(NurseID),
-    FOREIGN KEY (PatientID) REFERENCES patient(PatientID)
 );
 
 CREATE TABLE patient (
@@ -109,4 +99,47 @@ INSERT INTO nurse (FirstName, LastName, Shift) VALUES
 ('Anna', 'Martinez', 'Evening'),
 ('David', 'Hernandez', 'Day'),
 ('Jessica', 'Wilson', 'Night');
+
+
+INSERT INTO medication (Name, Pharma_Company, Purpose, SideEffects, DosageForm) VALUES 
+('Lisinopril', 'Merck', 'Lower blood pressure', 'Dizziness, headaches', 'Tablet'),
+('Ciprofloxacin', 'Bayer', 'Antibiotic', 'Nausea, diarrhea', 'Tablet'),
+('Metformin', 'GlaxoSmithKline', 'Diabetes treatment', 'Nausea, vomiting', 'Extended-release tablet'),
+('Simvastatin', 'Pfizer', 'Lower cholesterol', 'Muscle pain, headaches', 'Tablet'),
+('Omeprazole', 'AstraZeneca', 'Reduce stomach acid', 'Headache, stomach pain', 'Capsule');
+
+INSERT INTO patient (FirstName, LastName, DateOfBirth, Address, Allergies, BloodType) VALUES 
+('Mia', 'Williams', '1991-05-21', '234 Elm St, Springfield', 'None', 'A+'),
+('Ethan', 'Brown', '1988-12-10', '567 Oak Ave, Greenville', 'Penicillin', 'B-'),
+('Abigail', 'Davis', '1976-03-15', '890 Maple Rd, Oldtown', 'Latex', 'O+'),
+('Alexander', 'Wilson', '1982-07-22', '123 Pine St, Newtown', 'None', 'AB-'),
+('Sophia', 'Martinez', '1990-09-30', '456 Birch Ln, Hillville', 'Nuts', 'A-');
+
+INSERT INTO room (RoomNumber, RoomType, Capacity) VALUES 
+('101A', 'ICU', 1),
+('101B', 'ICU', 1),
+('102', 'General', 2),
+('103', 'General', 2),
+('201', 'Maternity', 3);
+
+INSERT INTO patient_room (PatientID, NurseID, RoomNumber, CheckInDate, CheckOutDate) VALUES
+(1, 1, '101A', '2023-04-01', NULL),
+(2, 2, '102', '2023-04-02', NULL),
+(3, 3, '103', '2023-04-03', '2023-04-10'),
+(4, 4, '101B', '2023-04-04', NULL),
+(5, 5, '201', '2023-04-05', NULL);
+
+INSERT INTO appointment (PatientID, DoctorID, AppointmentDate, AppointmentTime, Purpose, Notes) VALUES
+(1, 1, '2023-04-15', '2023-04-15 09:00:00', 'Routine Checkup', 'Annual physical'),
+(2, 2, '2023-04-16', '2023-04-16 10:00:00', 'Follow-up', 'Review test results'),
+(3, 3, '2023-04-17', '2023-04-17 11:00:00', 'Consultation', 'Discuss treatment options'),
+(4, 4, '2023-04-18', '2023-04-18 14:00:00', 'Emergency', 'Urgent consultation'),
+(5, 5, '2023-04-19', '2023-04-19 15:00:00', 'Routine Checkup', 'Pregnancy follow-up');
+
+INSERT INTO patient_medication (PatientID, MedicationID, PrescribedDate, Dosage, Frequency) VALUES
+(1, 1, '2023-04-01', '10mg', 'Once a day'),
+(2, 2, '2023-04-02', '250mg', 'Twice a day'),
+(3, 3, '2023-04-03', '500mg', 'Once a day'),
+(4, 4, '2023-04-04', '20mg', 'Once a day'),
+(5, 5, '2023-04-05', '40mg', 'Once a day');
 

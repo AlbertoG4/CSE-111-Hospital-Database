@@ -10,7 +10,7 @@ class App(ctk.CTk):
         super().__init__()
 
         self.title("Hospital Database")
-        self.geometry("700x450")
+        self.geometry("1050x650")
 
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
@@ -19,7 +19,7 @@ class App(ctk.CTk):
         # load images with light and dark mode image
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test_images")
         self.blue_cross = ctk.CTkImage(Image.open(os.path.join(image_path, "Blue_cross.svg.png")), size=(26, 26))
-        self.large_test_image = ctk.CTkImage(Image.open(os.path.join(image_path, "large_test_image.png")), size=(500, 150))
+        self.large_test_image = ctk.CTkImage(Image.open(os.path.join(image_path, "background.jpg")), size=(500, 150))
         self.image_icon_image = ctk.CTkImage(Image.open(os.path.join(image_path, "image_icon_light.png")), size=(20, 20))
         self.home_image = ctk.CTkImage(light_image=Image.open(os.path.join(image_path, "home_dark.png")),
                                                  dark_image=Image.open(os.path.join(image_path, "home_light.png")), size=(20, 20))
@@ -62,18 +62,19 @@ class App(ctk.CTk):
                                                       image=self.chat_image, anchor="w", command=self.rooms_button_event)
         self.rooms_button.grid(row=5, column=0, sticky="ew")
 
-        self.doc_nurse_button = ctk.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Doctor/Nurse Managment",
-                                                      fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
-                                                      image=self.chat_image, anchor="w", command=self.doc_nurse_button_event)
-        self.doc_nurse_button.grid(row=6, column=0, sticky="ew")
+        # self.doc_nurse_button = ctk.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="Doctor/Nurse Managment",
+        #                                               fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
+        #                                               image=self.chat_image, anchor="w", command=self.doc_nurse_button_event)
+        # self.doc_nurse_button.grid(row=6, column=0, sticky="ew")
 
         self.appearance_mode_menu = ctk.CTkOptionMenu(self.navigation_frame, values=["Light", "Dark", "System"],
                                                                 command=self.change_appearance_mode_event)
         self.appearance_mode_menu.grid(row=7, column=0, padx=20, pady=20, sticky="s")
         
-        # create home frame
+        # create home_patient_search frame
         self.home_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.home_frame.grid_columnconfigure(0, weight=1)
+        self.home_frame.grid_columnconfigure((1, 2) , weight=0)
 
         self.home_frame_large_image_label = ctk.CTkLabel(self.home_frame, text="", image=self.large_test_image)
         self.home_frame_large_image_label.grid(row=0, column=0, padx=20, pady=10)
@@ -89,10 +90,19 @@ class App(ctk.CTk):
 
         self.submit_search_button = ctk.CTkButton(self.home_frame, text="Search", command=self.search_patient_data)
         self.submit_search_button.grid(row=4, column=0, padx=20, pady=10)
+        
+        #    # Assuming add_patient_frame is already defined in your class
+        # self.tabview = ctk.CTkTabview(self.home_frame, width=250)
+        # self.tabview.add("Results")
+        # self.tabview.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
 
         # create add patient frame
         self.add_patient_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.add_patient_frame.grid_columnconfigure(0, weight=1)
+        self.add_patient_frame.grid_columnconfigure((1, 2) , weight=0)
+
+        self.add_patient__image_label = ctk.CTkLabel(self.add_patient_frame, text="", image=self.large_test_image)
+        self.add_patient__image_label.grid(row=0, column=0, padx=20, pady=10)
 
         self.entry_first = ctk.CTkEntry(self.add_patient_frame, placeholder_text="First Name")
         self.entry_first.grid(row=1, column=0, padx=20, pady=10)
@@ -115,90 +125,145 @@ class App(ctk.CTk):
         self.submit_button = ctk.CTkButton(self.add_patient_frame, text="Submit", command=self.save_patient_data)
         self.submit_button.grid(row=7, column=0, padx=20, pady=10)
 
+        #     # create tabview
+        # self.tabview = ctk.CTkTabview(self.add_patient_frame, width=250)
+        # self.tabview.add("Results")
+        # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+
 
         # Display rooms frame
         self.room_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.room_frame.grid_columnconfigure(0, weight=1)
+        self.room_frame.grid_columnconfigure((1, 2) , weight=0)
+
+        self.room_frame__image_label = ctk.CTkLabel(self.room_frame, text="", image=self.large_test_image)
+        self.room_frame__image_label.grid(row=0, column=0, padx=20, pady=10)
 
             #Display all rooms button
         self.submit_button_all = ctk.CTkButton(self.room_frame, text="Display all Rooms", command=self.display_rooms_all)
-        self.submit_button_all.grid(row=0, column=0, padx=20, pady=10)
+        self.submit_button_all.grid(row=1, column=0, padx=20, pady=10)
 
             #Display available rooms
         self.submit_button_empty = ctk.CTkButton(self.room_frame, text="Display available rooms", command=self.display_rooms_empty)
-        self.submit_button_empty.grid(row=1, column=0, padx=20, pady=10)
+        self.submit_button_empty.grid(row=2, column=0, padx=20, pady=10)
 
             #Display Non-available rooms
         self.submit_button_non_empty = ctk.CTkButton(self.room_frame, text="Display Non-available rooms", command=self.display_rooms_occupied)
-        self.submit_button_non_empty.grid(row=2, column=0, padx=20, pady=10)
+        self.submit_button_non_empty.grid(row=3, column=0, padx=20, pady=10)
+
+        #     # create tabview
+        # self.tabview = ctk.CTkTabview(self.room_frame, width=250)
+        # self.tabview.add("Results")
+        # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         #search appointment frame
         self.search_appointment_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.search_appointment_frame.grid(row=1, column=0, padx=20, pady=10)
+        self.search_appointment_frame.grid_columnconfigure(0, weight=1)
+        self.search_appointment_frame.grid_columnconfigure((1, 2) , weight=0)
 
-        self.entry_patient_name = ctk.CTkEntry(self.search_appointment_frame, placeholder_text="Patient Name")
-        self.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
+        self.search_appointment_frame_label = ctk.CTkLabel(self.search_appointment_frame, text="", image=self.large_test_image)
+        self.search_appointment_frame_label.grid(row=0, column=0, padx=20, pady=10)
+
+        self.a_first = ctk.CTkEntry(self.search_appointment_frame, placeholder_text="First_Name")
+        self.a_first.grid(row=1, column=0, padx=20, pady=10)
+
+        self.a_last = ctk.CTkEntry(self.search_appointment_frame, placeholder_text="Last_Name")
+        self.a_last.grid(row=2, column=0, padx=20, pady=10)
 
         self.entry_patient_dob = ctk.CTkEntry(self.search_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
-        self.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
+        self.entry_patient_dob.grid(row=3, column=0, padx=20, pady=10)
 
         self.submit_button = ctk.CTkButton(self.search_appointment_frame, text="Submit", command=self.search_appointment)
-        self.submit_button.grid(row=3, column=0, padx=20, pady=10)       
+        self.submit_button.grid(row=4, column=0, padx=20, pady=10)
+
+        self.submit_button = ctk.CTkButton(self.search_appointment_frame, text="Display all apointments", command=self.display_appointments)
+        self.submit_button.grid(row=5, column=0, padx=20, pady=10)           
+
+        #     # create tabview
+        # self.tabview = ctk.CTkTabview(self.search_appointment_frame, width=250)
+        # self.tabview.add("Results")
+        # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+
         #create/add appointment frame
         self.add_appointment_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.add_appointment_frame.grid_columnconfigure(0, weight=1)
+        self.add_appointment_frame.grid_columnconfigure((1, 2) , weight=0)
 
-        self.entry_patient_name = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Patient Name")
-        self.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
+        self.add_appointment_frame_label = ctk.CTkLabel(self.add_appointment_frame, text="", image=self.large_test_image)
+        self.add_appointment_frame_label.grid(row=0, column=0, padx=20, pady=10)
+
+        self.entry_patient_first_name = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="First_Name")
+        self.entry_patient_first_name.grid(row=1, column=0, padx=20, pady=10)
+
+        self.entry_patient_last_name = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Last_Name")
+        self.entry_patient_last_name.grid(row=2, column=0, padx=20, pady=10)
 
         self.entry_patient_dob = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
-        self.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
+        self.entry_patient_dob.grid(row=3, column=0, padx=20, pady=10)
 
         self.entry_appointment_date = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Appointment Date (YYYY-MM-DD)")
-        self.entry_appointment_date.grid(row=3, column=0, padx=20, pady=10)
+        self.entry_appointment_date.grid(row=4, column=0, padx=20, pady=10)
 
         self.entry_appointment_time = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Appointment Time (HH:MM AM/PM)")
-        self.entry_appointment_time.grid(row=4, column=0, padx=20, pady=10)
+        self.entry_appointment_time.grid(row=5, column=0, padx=20, pady=10)
 
         self.submit_button = ctk.CTkButton(self.add_appointment_frame, text="Submit", command=self.add_appointment)
-        self.submit_button.grid(row=5, column=0, padx=20, pady=10)
-        
-        #create doc and nurse frame
-        self.doc_nurse_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.submit_button.grid(row=6, column=0, padx=20, pady=10)
 
+        #     # create tabview
+        # self.tabview = ctk.CTkTabview(self.add_appointment_frame, width=250)
+        # self.tabview.add("Results")
+        # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
         
+        # #create doc and nurse frame
+        # self.doc_nurse_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        # self.doc_nurse_frame.grid_columnconfigure(0, weight=1)
+        # self.doc_nurse_frame.grid_columnconfigure((1, 2) , weight=0)
+
+        # self.doc_nurse_frame_label = ctk.CTkLabel(self.doc_nurse_frame, text="", image=self.large_test_image)
+        # self.doc_nurse_frame_label.grid(row=0, column=0, padx=20, pady=10)
 
         # select default frame
         self.select_frame_by_name("Patient_Home")
-        
 
     def search_patient_data(self):
         # Fetch data from entry fields
-        first_name = self.search_first_name.get()
-        last_name = self.search_last_name.get()
-        dob = self.search_dob.get()
+        first_name = self.search_first_name.get().strip()
+        last_name = self.search_last_name.get().strip()
+        dob = self.search_dob.get().strip()
+
+        # Building the query dynamically based on input
+        query_parts = []
+        params = []
+        if first_name:
+            query_parts.append("FirstName LIKE ?")
+            params.append(first_name + '%')
+        if last_name:
+            query_parts.append("LastName LIKE ?")
+            params.append(last_name + '%')
+        if dob:
+            query_parts.append("DateOfBirth = ?")
+            params.append(dob)
+
+        # If no fields are filled, return to avoid querying all records
+        if not query_parts:
+            print("No search criteria provided.")
+            return
+
+        query = "SELECT * FROM patient WHERE " + " OR ".join(query_parts)
 
         # Database operation
         try:
-            # Connect to the SQLite database
-            conn = sqlite3.connect('data.sqlite')  # Replace 'data.sqlite' with your actual database file
+            conn = sqlite3.connect('data.sqlite')
             cursor = conn.cursor()
-
-            # SQL query to search for a patient
-            # This query will search for records that match all provided fields
-            query = ''' SELECT * FROM patient 
-                        WHERE FirstName LIKE ? AND LastName LIKE ? AND DateOfBirth = ? '''
-            cursor.execute(query, (first_name + '%', last_name + '%', dob))
-
-            # Fetching the results
+            cursor.execute(query, params)
             search_results = cursor.fetchall()
             for row in search_results:
                 print(row)  # Print the result or handle it as needed
-
         except sqlite3.Error as error:
             print("Failed to search data in sqlite table", error)
-        
         finally:
-            # Close the database connection
             if conn:
                 conn.close()
 
@@ -296,29 +361,58 @@ class App(ctk.CTk):
             if conn:
                 conn.close()
 
+
+    def display_appointments(self):
+        try:
+            conn = sqlite3.connect('data.sqlite')
+            cursor = conn.cursor()
+
+            # SQL query to select all appointments
+            query = "SELECT * FROM appointment"
+            cursor.execute(query)
+
+            # Fetch all appointments
+            appointments = cursor.fetchall()
+
+            # Check if any appointments were found
+            if appointments:
+                print("All Appointments:")
+                for appointment in appointments:
+                    print(appointment)  # Each appointment is a tuple of data
+            else:
+                print("No appointments found.")
+
+        except sqlite3.Error as error:
+            print("Failed to retrieve appointments", error)
+        finally:
+            if conn:
+                conn.close()
+
     def search_appointment(self):
         # Fetch data from entry fields
-        patient_name = self.entry_patient_name.get()
+        patient_first_name = self.a_first.get()
+        patient_last_name = self.a_last.get()
         patient_dob = self.entry_patient_dob.get()
 
         try:
             conn = sqlite3.connect('data.sqlite')
             cursor = conn.cursor()
 
-            # Assuming you have a 'patient' and an 'appointment' table and they are related by 'PatientID'.
-            # This query joins the 'patient' and 'appointment' tables to find appointments
-            # for a patient with a matching name and date of birth.
-            query = ''' SELECT a.AppointmentID, a.AppointmentTime, a.Notes
+            # SQL query to find appointments for a patient with a matching name and date of birth.
+            query = ''' SELECT a.AppointmentID, a.AppointmentDate, a.AppointmentTime, a.Purpose, a.Notes
                         FROM appointment a
                         JOIN patient p ON a.PatientID = p.PatientID
-                        WHERE p.FirstName || ' ' || p.LastName LIKE ? AND p.DateOfBirth = ? '''
+                        WHERE p.FirstName = ? AND p.LastName = ? OR p.DateOfBirth = ? '''
 
-            # Format patient name for partial matching and execute query
-            cursor.execute(query, ('%' + patient_name + '%', patient_dob))
+            cursor.execute(query, (patient_first_name, patient_last_name, patient_dob))
             appointments = cursor.fetchall()
 
-            for appointment in appointments:
-                print(appointment)  # Replace with your method of displaying the data
+            if appointments:
+                print("Appointments found:")
+                for appointment in appointments:
+                    print(appointment)  # Displaying the data in the terminal
+            else:
+                print("No appointments found for the specified patient.")
 
         except sqlite3.Error as error:
             print("Failed to search appointments", error)
@@ -326,22 +420,30 @@ class App(ctk.CTk):
             if conn:
                 conn.close()
 
+
     def add_appointment(self):
         # Fetch data from entry fields
-        patient_name = self.entry_patient_name.get()
+        patient_first_name = self.entry_patient_first_name.get()
+        patient_last_name = self.entry_patient_last_name.get()
         patient_dob = self.entry_patient_dob.get()
         appointment_date = self.entry_appointment_date.get()
         appointment_time = self.entry_appointment_time.get()
 
-        # Combine date and time into a single datetime object (if necessary)
-        appointment_datetime = datetime.strptime(appointment_date + ' ' + appointment_time, '%Y-%m-%d %I:%M %p')
+        # Combine date and time into a single datetime object
+        try:
+            appointment_datetime = datetime.strptime(appointment_date + ' ' + appointment_time, '%Y-%m-%d %H:%M')
+            formatted_appointment_time = appointment_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        except ValueError as e:
+            print("Invalid date/time format:", e)
+            return
 
         try:
             conn = sqlite3.connect('data.sqlite')
             cursor = conn.cursor()
 
-            # Assuming you have a 'patient' table and you need to find the PatientID based on name and DOB
-            cursor.execute("SELECT PatientID FROM patient WHERE FirstName || ' ' || LastName = ? AND DateOfBirth = ?", (patient_name, patient_dob))
+            # Find the PatientID based on first name, last name, and DOB
+            cursor.execute("SELECT PatientID FROM patient WHERE FirstName = ? AND LastName = ? AND DateOfBirth = ?", 
+                        (patient_first_name, patient_last_name, patient_dob))
             patient_id_result = cursor.fetchone()
 
             if patient_id_result:
@@ -350,7 +452,7 @@ class App(ctk.CTk):
                 # SQL query to insert a new appointment
                 query = ''' INSERT INTO appointment (PatientID, AppointmentTime)
                             VALUES (?, ?) '''
-                cursor.execute(query, (patient_id, appointment_datetime))
+                cursor.execute(query, (patient_id, formatted_appointment_time))
                 conn.commit()
                 print("Appointment added successfully")
             else:
@@ -362,7 +464,7 @@ class App(ctk.CTk):
             if conn:
                 conn.close()
 
-
+    
     def select_frame_by_name(self, name):
         # set button color for selected button
         self.patient_button.configure(fg_color=("gray75", "gray25") if name == "Patient_Home" else "transparent")
@@ -370,7 +472,7 @@ class App(ctk.CTk):
         self.appointment_search_button.configure(fg_color=("gray75", "gray25") if name == "Appointment_Search" else "transparent")
         self.add_appointment_button.configure(fg_color=("gray75", "gray25") if name == "Add_Appointment" else "transparent")
         self.rooms_button.configure(fg_color=("gray75", "gray25") if name == "Rooms" else "transparent")
-        self.doc_nurse_button.configure(fg_color=("gray75", "gray25") if name == "Doctor_Nurse" else "transparent")
+        # self.doc_nurse_button.configure(fg_color=("gray75", "gray25") if name == "Doctor_Nurse" else "transparent")
 
         # show selected frame
         if name == "Patient_Home":
@@ -393,10 +495,10 @@ class App(ctk.CTk):
             self.room_frame.grid(row=0, column=1, sticky="nsew")
         else:
             self.room_frame.grid_forget()
-        if name == "Doctor_Nurse":
-            self.doc_nurse_frame.grid(row=0, column=1, sticky="nsew")
-        else:
-            self.doc_nurse_frame.grid_forget()
+        # if name == "Doctor_Nurse":
+        #     self.doc_nurse_frame.grid(row=0, column=1, sticky="nsew")
+        # else:
+        #     self.doc_nurse_frame.grid_forget()
 
     def patient_button_event(self):
         self.select_frame_by_name("Patient_Home")
@@ -413,8 +515,8 @@ class App(ctk.CTk):
     def rooms_button_event(self):
         self.select_frame_by_name("Rooms")
 
-    def doc_nurse_button_event(self):
-        self.select_frame_by_name("Doctor and Nurse")
+    # def doc_nurse_button_event(self):
+    #     self.select_frame_by_name("Doctor_Nurse")
 
 
     def change_appearance_mode_event(self, new_appearance_mode):
