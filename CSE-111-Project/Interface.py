@@ -151,6 +151,10 @@ class App(ctk.CTk):
         self.submit_button_non_empty = ctk.CTkButton(self.room_frame, text="Display Non-available rooms", command=self.display_rooms_occupied)
         self.submit_button_non_empty.grid(row=3, column=0, padx=20, pady=10)
 
+            #Display patient rooms
+        self.display_patient_rooms = ctk.CTkButton(self.room_frame, text="Display Patient rooms", command=self.patient_rooms)
+        self.display_patient_rooms.grid(row=4, column=0, padx=20, pady=10)
+
         #     # create tabview
         # self.tabview = ctk.CTkTabview(self.room_frame, width=250)
         # self.tabview.add("Results")
@@ -185,10 +189,10 @@ class App(ctk.CTk):
         # self.tabview.add("Results")
         # self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
-        #create/add appointment frame
+        #create/add/delete/update appointment frame
         self.add_appointment_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.add_appointment_frame.grid_columnconfigure(0, weight=1)
-        self.add_appointment_frame.grid_columnconfigure((1, 2) , weight=0)
+        self.add_appointment_frame.grid_columnconfigure(1 , weight=0)
 
         self.add_appointment_frame_label = ctk.CTkLabel(self.add_appointment_frame, text="", image=self.large_test_image)
         self.add_appointment_frame_label.grid(row=0, column=0, padx=20, pady=10)
@@ -210,6 +214,18 @@ class App(ctk.CTk):
 
         self.submit_button = ctk.CTkButton(self.add_appointment_frame, text="Submit", command=self.add_appointment)
         self.submit_button.grid(row=6, column=0, padx=20, pady=10)
+
+        self.delete_patient_first_name = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="First_Name")
+        self.delete_patient_first_name.grid(row=1, column=1, padx=20, pady=10)
+
+        self.delete_patient_last_name = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Last_Name")
+        self.delete_patient_last_name.grid(row=2, column=1, padx=20, pady=10)
+
+        self.entry_appointment_date = ctk.CTkEntry(self.add_appointment_frame, placeholder_text="Appointment Date (YYYY-MM-DD)")
+        self.entry_appointment_date.grid(row=3, column=1, padx=20, pady=10)
+
+        self.delete_button = ctk.CTkButton(self.add_appointment_frame, text="Submit", command=self.delete_appointment)
+        self.delete_button.grid(row=4, column=1, padx=20, pady=10)
 
         #     # create tabview
         # self.tabview = ctk.CTkTabview(self.add_appointment_frame, width=250)
@@ -361,14 +377,54 @@ class App(ctk.CTk):
             if conn:
                 conn.close()
 
+    def patient_rooms(self):
+        try:
+            conn = sqlite3.connect('data.sqlite')
+            cursor = conn.cursor()
+
+            # SQL query to select patient room data and join with the patient and nurse tables
+            query = '''
+                SELECT pr.RoomNumber, pr.CheckInDate, pr.CheckOutDate, 
+                    p.FirstName || ' ' || p.LastName AS PatientName, 
+                    n.FirstName || ' ' || n.LastName AS NurseName
+                FROM patient_room pr
+                JOIN patient p ON pr.PatientID = p.PatientID
+                LEFT JOIN nurse n ON pr.NurseID = n.NurseID
+            '''
+            cursor.execute(query)
+
+            # Fetch all patient room data
+            patient_rooms = cursor.fetchall()
+
+            # Check if any patient room data was found
+            if patient_rooms:
+                print("All Patient Rooms:")
+                for room in patient_rooms:
+                    print(f"Room Number: {room[0]}, Check-In Date: {room[1]}, Check-Out Date: {room[2]}, Patient: {room[3]}, Nurse: {room[4]}")
+            else:
+                print("No patient rooms found.")
+
+        except sqlite3.Error as error:
+            print("Failed to retrieve patient rooms", error)
+        finally:
+            if conn:
+                conn.close()
+
+
+
 
     def display_appointments(self):
         try:
             conn = sqlite3.connect('data.sqlite')
             cursor = conn.cursor()
 
-            # SQL query to select all appointments
-            query = "SELECT * FROM appointment"
+            # SQL query to select all appointments and join with the patient and doctor tables
+            query = '''
+                SELECT a.AppointmentID, p.FirstName, p.LastName, d.FirstName, d.LastName, a.AppointmentDate, a.AppointmentTime, a.Purpose, a.Notes
+                FROM appointment a
+                JOIN patient p ON a.PatientID = p.PatientID
+                JOIN doctor d ON a.DoctorID = d.DoctorID
+            '''
             cursor.execute(query)
 
             # Fetch all appointments
@@ -378,7 +434,10 @@ class App(ctk.CTk):
             if appointments:
                 print("All Appointments:")
                 for appointment in appointments:
-                    print(appointment)  # Each appointment is a tuple of data
+                    # Each appointment is a tuple of data
+                    print(f"Appointment ID: {appointment[0]} | Patient Name: {appointment[1]} {appointment[2]} | "
+                        f"Doctor Name: {appointment[3]} {appointment[4]} | "
+                        f"Date: {appointment[5]} | Time: {appointment[6]} | Purpose: {appointment[7]} | Notes: {appointment[8]}")
             else:
                 print("No appointments found.")
 
@@ -387,6 +446,9 @@ class App(ctk.CTk):
         finally:
             if conn:
                 conn.close()
+
+
+
 
     def search_appointment(self):
         # Fetch data from entry fields
@@ -460,6 +522,44 @@ class App(ctk.CTk):
 
         except sqlite3.Error as error:
             print("Failed to add appointment", error)
+        finally:
+            if conn:
+                conn.close()
+
+    def delete_appointment(self):
+        # Fetch data from entry fields
+        patient_first_name = self.delete_patient_first_name.get()
+        patient_last_name = self.delete_patient_last_name.get()
+        appointment_date = self.entry_appointment_date.get()
+
+        try:
+            conn = sqlite3.connect('data.sqlite')
+            cursor = conn.cursor()
+
+            # First, find the patient ID based on the first and last name
+            cursor.execute("SELECT PatientID FROM patient WHERE FirstName = ? AND LastName = ?", 
+                        (patient_first_name, patient_last_name))
+            patient_id_result = cursor.fetchone()
+
+            if patient_id_result:
+                patient_id = patient_id_result[0]
+
+                # Then, delete the appointment for that patient ID and the specified date
+                delete_query = ''' DELETE FROM appointment 
+                                WHERE PatientID = ? AND AppointmentDate = ? '''
+                cursor.execute(delete_query, (patient_id, appointment_date))
+                conn.commit()
+
+                if cursor.rowcount > 0:
+                    print("Appointment deleted successfully")
+                else:
+                    print("No appointment found for the given details")
+
+            else:
+                print("Patient not found")
+
+        except sqlite3.Error as error:
+            print("Failed to delete appointment", error)
         finally:
             if conn:
                 conn.close()
