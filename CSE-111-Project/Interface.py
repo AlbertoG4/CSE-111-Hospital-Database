@@ -116,7 +116,7 @@ class App(ctk.CTk):
         app.search_last_name = ctk.CTkEntry(app.home_frame, placeholder_text="Last Name")
         app.search_last_name.grid(row=2, column=0, padx=20, pady=10)
 
-        app.search_dob = ctk.CTkEntry(app.home_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.search_dob = ctk.CTkEntry(app.home_frame, placeholder_text="(YYYY-MM-DD)")
         app.search_dob.grid(row=3, column=0, padx=20, pady=10)
 
         app.submit_search_button = ctk.CTkButton(app.home_frame, text="Search", command=search_patient_data)
@@ -170,7 +170,7 @@ class App(ctk.CTk):
         app.entry_last = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Last Name")
         app.entry_last.grid(row=2, column=0, padx=20, pady=10)
 
-        app.entry_bday = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.entry_bday = ctk.CTkEntry(app.add_patient_frame, placeholder_text="(YYYY-MM-DD)")
         app.entry_bday.grid(row=3, column=0, padx=20, pady=10)
 
         app.entry_address = ctk.CTkEntry(app.add_patient_frame, placeholder_text="Address")
@@ -302,7 +302,7 @@ class App(ctk.CTk):
         #Display all nurses
         app.submit_button_empty = ctk.CTkButton(app.doc_nurse_frame, text="Display all nurses", command=display_nurses)
         app.submit_button_empty.grid(row=1, column=0, padx=20, pady=10)
-        
+
         def search_appointment():
             # Fetch data from entry fields
             patient_name = app.entry_patient_name.get()
@@ -340,7 +340,7 @@ class App(ctk.CTk):
         app.entry_patient_name = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="Patient Name")
         app.entry_patient_name.grid(row=1, column=0, padx=20, pady=10)
 
-        app.entry_patient_dob = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.entry_patient_dob = ctk.CTkEntry(app.search_appointment_frame, placeholder_text="(YYYY-MM-DD)")
         app.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
 
         app.submit_button = ctk.CTkButton(app.search_appointment_frame, text="Submit", command=search_appointment)
@@ -389,7 +389,7 @@ class App(ctk.CTk):
         app.entry_patient_name = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Patient Name")
         app.entry_patient_name.grid_columnconfigure(0, weight=1)
 
-        app.entry_patient_dob = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Date of Birth (YYYY-MM-DD)")
+        app.entry_patient_dob = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="(YYYY-MM-DD)")
         app.entry_patient_dob.grid(row=2, column=0, padx=20, pady=10)
 
         app.entry_appointment_date = ctk.CTkEntry(app.add_appointment_frame, placeholder_text="Appointment Date (YYYY-MM-DD)")
