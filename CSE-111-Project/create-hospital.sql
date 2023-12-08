@@ -143,3 +143,4 @@ INSERT INTO patient_medication (PatientID, MedicationID, PrescribedDate, Dosage,
 (4, 4, '2023-04-04', '20mg', 'Once a day'),
 (5, 5, '2023-04-05', '40mg', 'Once a day');
 
+DELETE FROM patient WHERE PatientID = '6';
